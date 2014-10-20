@@ -26,11 +26,11 @@ title('Composante Cr');
 
 %% Commentaires
 
-% Sur les images qui repr?sentent les composantes R, G et B, on remarque
+% Sur les images qui representent les composantes R, G et B, on remarque
 % que la boule blanche apparait blanche sur les trois images.
 
-% Sur les images qui repr?sentent les composantes Y, Cr, et Cb, on remarque
+% Sur les images qui representent les composantes Y, Cr, et Cb, on remarque
 % que la boule blanche apparait blanche uniquement sur l'image de la
-% luminance. De plus, les boules ayant une couleur ? forte dominante rouge
+% luminance. De plus, les boules ayant une couleur a forte dominante rouge
 % ou bleu apparaissent respectivement blanches sur les images de la
 % crominance rouge ou bleu.
