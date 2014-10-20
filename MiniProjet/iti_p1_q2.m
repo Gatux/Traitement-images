@@ -21,7 +21,7 @@ Cb=0.564*(B1-Y)+128;
 Cr=0.713*(R1-Y)+128;
 
 subplot(1,3,2), imshow(uint8(Cb));
-title('Chrominance')
+title('Chrominance bleu')
 
  for i=1:length(Bg(:,1))
    for j=1:length(Bg)
