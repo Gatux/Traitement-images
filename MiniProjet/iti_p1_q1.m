@@ -7,7 +7,7 @@ Y=0.229*R+0.587*G+0.114*B;
 Cb=0.564*(B-Y)+128;
 Cr=0.713*(R-Y)+128;
 
-figure, 
+figure,
 subplot(3,3,8),imshow(uint8(A))
 title('Couleurs vrais');
 subplot(3,3,1), imshow(uint8(R))
