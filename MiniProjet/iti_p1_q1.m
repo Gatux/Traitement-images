@@ -1,4 +1,4 @@
-A = double(imread('pool.tif'));
+A = double(imread('img/pool.tif'));
 R=A(:,:,1);
 G=A(:,:,2);
 B=A(:,:,3);
