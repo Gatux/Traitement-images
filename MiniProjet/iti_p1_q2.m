@@ -21,14 +21,18 @@ Cb=0.564*(B1-Y)+128;
 Cr=0.713*(R1-Y)+128;
 
 subplot(1,3,2), imshow(uint8(Cb));
-title('Chrominance')
+title('Chrominance bleu')
 
  for i=1:length(Bg(:,1))
    for j=1:length(Bg)
      if (Cb(i,j)>145)
-     R1(i,j)=255;
-     G1(i,j)=255;
-     B1(i,j)=255;
+       R1(i,j)=255;
+       G1(i,j)=255;
+       B1(i,j)=255;
+     else
+       R2(i,j) = R1(i,j); 
+       G2(i,j) = G1(i,j);
+       B2(i,j) = B1(i,j);
      end
    end
  end
@@ -36,17 +40,7 @@ title('Chrominance')
 subplot(1,3,3), imshow(cat(3,R1/255,G1/255,B1/255));
 title('Image sans le ciel');
 
-for i=1:1:length(Bg(:,1));
-  for j=1:1:length(Bg);      
-    if(R1(i,j) == 255 && G1(i,j) == 255 && B1(i,j) == 255)
-      R1(i,j) = R2(i,j); 
-      G1(i,j) = G2(i,j);
-      B1(i,j) = B2(i,j);
-    end
-  end
-end
-
-figure , imshow(cat(3,R1/255,G1/255,B1/255));
+figure , imshow(cat(3,R2/255,G2/255,B2/255));
 title('Chroma-keying');
 
 
