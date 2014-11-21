@@ -54,19 +54,38 @@ imshow(code_barre);
 
 N = 256;
 h = hist(code_barre, N);
-h_sum = sum(sum(h, 2));
+s = sum(h,2);
+h_sum = sum(s);
 
-w = zeros(256);
-mu = zeros(256);
+w = zeros(256, 1);
+mu = zeros(256, 1);
 
-for i=1:256
-    s = sum(h,2);
-    w(i) = sum(s(i:1))/h_sum;
+for k=1:256
+    e = 0;
+    for i=1:k
+        e = e + i*s(i);
+    end
+    w(k) = sum(s(1:k))/h_sum;
+    mu(k) = e/h_sum;
 end
 
-w
+crit = zeros(256, 1);
+for k=1:256
+    crit(k) = w(k)*(mu(N)-mu(k)).^2+(1-w(k))*mu(k).^2;
+end
+
+[v,i] = max(crit);
+seuil = i/N;
 
 code_barre_line = mean(code_barre, 1);
+code_barre_line = code_barre_line > seuil;
+code_barre_line = abs(code_barre_line - 1);
+code_barre_line = code_barre_line(find(code_barre_line,1,'first'):find(code_barre_line,1,'last'));
+code_barre_line_nb = abs(code_barre_line - 1);
+
+
+figure
+imshow(code_barre_line_nb);
 
 %%
 find(code_barre_line,1,'first')
