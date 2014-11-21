@@ -2,25 +2,75 @@
 
 img_filename = 'img/code1.bmp';
 
-figure
-imshow(img_filename);
-
 % Ouverture de l'image
-code_barre = imread(img_filename);
+code_barre_src = imread(img_filename);
+
+R = double(code_barre_src(:,:,1));
+G = double(code_barre_src(:,:,2));
+B = double(code_barre_src(:,:,3));
+
+code_barre_nb = (R+G+B)/3/255;
+
+figure
+imshow(code_barre_nb);
 
 % Récupération des coordonnées 
-[x, y] = ginput(2);
+[gx, gy] = ginput(2);
 
-x_min = min(x);
-x_max = max(x);
-y_min = min(y);
-y_max = max(y);
+x_min = fix(min(gx));
+x_max = fix(max(gx));
+y_min = fix(min(gy));
+y_max = fix(max(gy));
 
-r_min = sum(code_barre(y_min, :));
+epsilon = 0.2;
 
-for y=ymin:-1:1
-    r = sum()
+[size_Y, size_X] = size(code_barre_nb);
+
+r_min = sum(code_barre_nb(y_min, x_min:x_max));
+for y=y_min:-1:1
+    r = abs(sum(code_barre_nb(y, x_min:x_max))/r_min);
+    if r > 1+epsilon || r < 1-epsilon
+        y_min = y;
+        break;
+    end 
 end
 
-code_barre = code_barre(y(1):y(2), x(1):x(2));
+r_max = sum(code_barre_nb(y_max, x_min:x_max));
+for y=y_max:1:size_Y
+    r = abs(sum(code_barre_nb(y, x_min:x_max))/r_max);
+    if r > 1+epsilon || r < 1-epsilon
+        y_max = y;
+        break;
+    end 
+end
+
+line([x_min, x_min], [0, size_Y]);
+line([x_max, x_max], [0, size_Y]);
+line([0, size_X], [y_min, y_min]);
+line([0, size_X], [y_max, y_max]);
+
+code_barre = code_barre_nb(y_min:y_max, x_min:x_max);
 imshow(code_barre);
+
+N = 256;
+h = hist(code_barre, N);
+h_sum = sum(sum(h, 2));
+
+w = zeros(256);
+mu = zeros(256);
+
+for i=1:256
+    s = sum(h,2);
+    w(i) = sum(s(i:1))/h_sum;
+end
+
+w
+
+code_barre_line = mean(code_barre, 1);
+
+%%
+find(code_barre_line,1,'first')
+%code_barre_line = code_barre_line(find(code_barre_line,1,'first'):find(code_barre_line,1,'last'));
+
+figure
+imshow(code_barre_line);
