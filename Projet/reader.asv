@@ -1,0 +1,46 @@
+%% Affichage du code barre
+
+img_filename = 'img/code1.bmp';
+
+% Ouverture de l'image
+code_barre_src = imread(img_filename);
+
+R = double(code_barre_src(:,:,1));
+G = double(code_barre_src(:,:,2));
+B = double(code_barre_src(:,:,3));
+
+code_barre_nb = (R+G+B)/3/255;
+code_barre_nb = double(code_barre_nb>0.5);
+
+figure
+imshow(code_barre_nb);
+
+% Récupération des coordonnées 
+[gx, gy] = ginput(2);
+
+x_min = fix(min(gx));
+x_max = fix(max(gx));
+y_min = fix(min(gy));
+y_max = fix(max(gy));
+
+r_min = sum(code_barre_nb(y_min, x_min:x_max));
+
+epsilon = 0.2;
+
+for y=y_min:-1:1
+    r = abs(sum(code_barre_nb(y, x_min:x_max))/r_min);
+    if r > 1+epsilon || r < 1-epsilon
+        y_min = y;
+        break;
+    end 
+end
+
+r_max = sum(code_barre_nb(y_max, x_min:x_max));
+
+for y=y_max:1:length(code_barre_nb(1, :))
+    r = abs(sum(code_barre_nb(y, x_min:x_max))/r_max);
+    if r > 1+epsilon || r < 1-epsilon
+        y_max = y;
+        break;
+    end 
+end
