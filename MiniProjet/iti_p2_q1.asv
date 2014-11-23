@@ -72,6 +72,6 @@ title('Representation frequentielle du filtre Gaussien');
 
 %% Etape 4
 
-img_filtree = conv2(img, H3, 'same');
+img_filtree = conv2(img, 
 
 
