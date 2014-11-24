@@ -1,4 +1,7 @@
-%% Affichage du code barre
+clear all
+close all
+
+% Affichage du code barre
 
 img_filename = 'img/code1.bmp';
 
@@ -50,7 +53,7 @@ line([0, size_X], [y_min, y_min]);
 line([0, size_X], [y_max, y_max]);
 
 code_barre = code_barre_nb(y_min:y_max, x_min:x_max);
-imshow(code_barre);
+%imshow(code_barre);
 
 N = 256;
 h = hist(code_barre, N);
@@ -83,9 +86,73 @@ code_barre_line = abs(code_barre_line - 1);
 code_barre_line = code_barre_line(find(code_barre_line,1,'first'):find(code_barre_line,1,'last'));
 code_barre_line_nb = abs(code_barre_line - 1);
 
+nb_elem = 7*12+3*2+5;
+code_barre_code = zeros(1, nb_elem);
+step = length(code_barre_line_nb) / nb_elem;
+i = 1;
+last = i;
+j = 1;
 
-figure
-imshow(code_barre_line_nb);
+for j=1:nb_elem
+    last = fix(i);
+    next = fix(i+step);
+    code_barre_code(j) = sum(code_barre_line_nb(last:next-1))/step > 0.5;
+    i = i + step;
+end
+
+codes = [
+    1,1,1,0,0,1,0;
+    1,1,0,0,1,1,0;
+    1,1,0,1,1,0,0;
+    1,0,0,0,0,1,0;
+    1,0,1,1,1,0,0;
+    1,0,0,1,1,1,0;
+    1,0,1,0,0,0,0;
+    1,0,0,0,1,0,0;
+    1,0,0,1,0,0,0;
+    1,1,1,0,1,0,0;
+    
+    1,0,1,1,0,0,0;
+    1,0,0,1,1,0,0;
+    1,1,0,0,1,0,0;
+    1,0,1,1,1,1,0;
+    1,1,0,0,0,1,0;
+    1,0,0,0,1,1,0;
+    1,1,1,1,0,1,0;
+    1,1,0,1,1,1,0;
+    1,1,1,0,1,1,0;
+    1,1,0,1,0,0,0;
+    
+    0,0,0,1,1,0,1;
+    0,0,1,1,0,0,1;
+    0,0,1,0,0,1,1;
+    0,1,1,1,1,0,1;
+    0,1,0,0,0,1,1;
+    1,0,0,1,1,1,0;
+    0,1,0,1,1,1,1;
+    0,1,1,1,0,1,1;
+    0,1,1,0,1,1,1;
+    0,0,0,1,0,1,1;];
+
+chiffres_codes = zeros(12, 7);
+
+for i=1:6
+    chiffres_codes(i, :) = code_barre_code(4+(i-1)*7:3+i*7);
+    chiffres_codes(i+6, :) = code_barre_code(4+7*6+5+(i-1)*7:3+7*6+5+i*7);
+end
+
+chiffres = zeros(1, 12);
+
+for i=1:12
+    [~,indx] = ismember(chiffres_codes(i, :),codes,'rows');
+    chiffres(i) = mod(indx-1, 10);
+end
+
+chiffres
+
+% 
+% figure
+% imshow(code_barre_line_nb);
 
 %%
 find(code_barre_line,1,'first')
