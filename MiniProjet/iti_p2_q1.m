@@ -74,4 +74,14 @@ title('Representation frequentielle du filtre Gaussien');
 
 img_filtree = conv2(img, H3, 'same');
 
+figure(5);
+subplot(1,2,1);
+imshow(img_filtree);
+
+IfH4 = fftshift(log10(abs(fft2(img_filtree))));
+subplot(1,2,2);
+imagesc(fx,fy,IfH4);
+
+
+
 
