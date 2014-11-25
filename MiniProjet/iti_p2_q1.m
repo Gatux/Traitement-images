@@ -2,7 +2,7 @@
 % Maxime PETERLIN - Gabriel VERMEULEN
 %% Etape 0
 clear all
-close all
+%close all
 
 img=double(imread('img/monument.bmp'));
 
@@ -18,10 +18,11 @@ imagesc(fx,fy,IfA);
 title('Representation frequentielle de l`image');
 
 %% Etape 1
-
+sx=-100:100;
+sy=-100:100;
 % Representation spatiale du filtre Gaussien
-[X,Y]=meshgrid(fx, fy);
-sigma=1.5;
+[X,Y]=meshgrid(sx,sy);
+sigma=10;
 H1=exp(-(X.^2+Y.^2)/(2*sigma^2))/(2*pi*sigma*sigma);
 
 figure(2);
@@ -36,9 +37,9 @@ imagesc(fx,fy,IfH1);
 title('Representation frequentielle du filtre Gaussien');
 
 %% Etape 2
-Fx=-0.0992*w;
-Fy=0.4032*h;
-H2 = H1 .* cos(2*pi*Fx*X + 2*pi*Fy*Y);
+Fx=-0.0992;
+Fy=0.3996;
+H2 = H1 .* 2.* cos(2*pi*Fx*X + 2*pi*Fy*Y);
 
 % Representation spatiale du filtre passe-bande
 figure(3);
@@ -53,8 +54,10 @@ imagesc(fx,fy,IfH2);
 title('Representation frequentielle du filtre Gaussien');
 
 %% Etape 3
-dirac = zeros(568,751);
-dirac(284,376) = 1; 
+tx = length(sx);
+ty = length(sy);
+dirac = zeros(ty,tx);
+dirac(fix(ty/2 +0.5), fix(tx/2 +0.5)) = 1; 
 
 H3 = dirac - H2;
 
@@ -75,12 +78,12 @@ title('Representation frequentielle du filtre Gaussien');
 img_filtree = conv2(img, H3, 'same');
 
 figure(5);
-subplot(1,2,1);
-imshow(img_filtree);
+imshow(img_filtree/255);
 
+figure(6)
 IfH4 = fftshift(log10(abs(fft2(img_filtree))));
-subplot(1,2,2);
 imagesc(fx,fy,IfH4);
+
 
 
 
