@@ -2,7 +2,7 @@
 % Maxime PETERLIN - Gabriel VERMEULEN
 %% Etape 0
 clear all
-%close all
+close all
 
 img=double(imread('img/monument.bmp'));
 
