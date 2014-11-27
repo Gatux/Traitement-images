@@ -37,8 +37,8 @@ imagesc(fx,fy,IfH1);
 title('Representation frequentielle du filtre Gaussien');
 
 %% Etape 2
-Fx=-0.0992;
-Fy=0.3996;
+Fx=0.0992;
+Fy=-0.3996;
 H2 = H1 .* 2.* cos(2*pi*Fx*X + 2*pi*Fy*Y);
 
 % Representation spatiale du filtre passe-bande
