@@ -3,16 +3,24 @@ close all
 
 % Affichage du code barre
 
-img_filename = 'img/code1.bmp';
+img_filename = 'img/code1_rayure.bmp';
 
 % Ouverture de l'image
 code_barre_src = imread(img_filename);
+code_barre_src = imrotate(code_barre_src, 25);
 
 R = double(code_barre_src(:,:,1));
 G = double(code_barre_src(:,:,2));
 B = double(code_barre_src(:,:,3));
 
 code_barre_nb = (R+G+B)/3/255;
+
+code_barre_cont = edge(code_barre_nb, 'sobel');
+[H,T,R] = hough(code_barre_cont);
+peak = houghpeaks(H);
+
+angle = T(peak(2));
+code_barre_nb = imrotate(code_barre_nb, angle, 'bilinear');
 
 figure
 imshow(code_barre_nb);
@@ -25,7 +33,7 @@ x_max = fix(max(gx));
 y_min = fix(min(gy));
 y_max = fix(max(gy));
 
-epsilon = 0.2;
+epsilon = 0.1;
 
 [size_Y, size_X] = size(code_barre_nb);
 
@@ -53,7 +61,7 @@ line([0, size_X], [y_min, y_min]);
 line([0, size_X], [y_max, y_max]);
 
 code_barre = code_barre_nb(y_min:y_max, x_min:x_max);
-imshow(code_barre);
+%imshow(code_barre);
 
 N = 256;
 h = hist(code_barre, N);
@@ -100,12 +108,12 @@ for j=1:nb_elem
     i = i + step;
 end
 
-
 codes = [
     1,1,1,0,0,1,0;
     1,1,0,0,1,1,0;
     1,1,0,1,1,0,0;
     1,0,0,0,0,1,0;
+    1,0,1,1,1,0,0;
     1,0,0,1,1,1,0;
     1,0,1,0,0,0,0;
     1,0,0,0,1,0,0;
@@ -128,7 +136,7 @@ codes = [
     0,0,1,0,0,1,1;
     0,1,1,1,1,0,1;
     0,1,0,0,0,1,1;
-    1,0,0,1,1,1,0;
+    0,1,1,0,0,0,1;
     0,1,0,1,1,1,1;
     0,1,1,1,0,1,1;
     0,1,1,0,1,1,1;
@@ -137,16 +145,23 @@ codes = [
 chiffres_codes = zeros(12, 7);
 
 for i=1:6
-    chiffres_codes(i, :) = code_barre_code(4+(i-1)*7:3+i*7)
-    chiffres_codes(i+6, :) = code_barre_code(4+7*6+5+(i-1)*7:3+7*6+5+i*7)
+    chiffres_codes(i, :) = code_barre_code(4+(i-1)*7:3+i*7);
+    chiffres_codes(i+6, :) = code_barre_code(4+7*6+5+(i-1)*7:3+7*6+5+i*7);
 end
 
-[~,indx]=ismember(chiffres_codes(1, :),codes,'rows')
+chiffres = zeros(1, 12);
 
 for i=1:12
-    chiffres_codes(i, :) = code_barre_code(4+(i-1)*7:3+i*7)
-    chiffres_codes(i+6, :) = code_barre_code(4+7*6+5+(i-1)*7:3+7*6+5+i*7)
+    [~,indx] = ismember(chiffres_codes(i, :),codes,'rows');
+    if(indx == 0)
+        disp('Impossible de lire le code barre');
+        chiffres(i) = nan;
+    else
+    chiffres(i) = mod(indx-1, 10);
+    end
 end
+
+chiffres
 
 % 
 % figure
