@@ -3,16 +3,19 @@ close all
 
 % Affichage du code barre
 
-img_filename = 'img/code1_rayure.bmp';
+img_filename = 'img/code3.jpg';
 
-vid = videoinput('winvideo', 1);
-set(vid, 'ReturnedColorSpace', 'RGB');
-img = getsnapshot(vid);
-imshow(img)
+% vid = videoinput('winvideo', 1);
+% set(vid, 'ReturnedColorSpace', 'RGB');
+% img = getsnapshot(vid);
+% imshow(img)
 
 % Ouverture de l'image
 code_barre_src = imread(img_filename);
-code_barre_src = imrotate(code_barre_src, 25);
+code_barre_src = imrotate(code_barre_src, 70);
+
+figure
+imshow(code_barre_src);
 
 R = double(code_barre_src(:,:,1));
 G = double(code_barre_src(:,:,2));
@@ -24,8 +27,8 @@ code_barre_cont = edge(code_barre_nb, 'sobel');
 [H,T,R] = hough(code_barre_cont);
 peak = houghpeaks(H);
 
-angle = T(peak(2));
-code_barre_nb = imrotate(code_barre_nb, angle, 'bilinear');
+angle = T(peak(2))
+code_barre_nb = imrotate(code_barre_nb, angle-90, 'bilinear');
 
 figure
 imshow(code_barre_nb);
