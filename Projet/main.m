@@ -4,12 +4,6 @@ close all
 % Affichage du code barre
 
 img_filename = 'img/code3.jpg';
-
-% vid = videoinput('winvideo', 1);
-% set(vid, 'ReturnedColorSpace', 'RGB');
-% img = getsnapshot(vid);
-% imshow(img)
-
 % Ouverture de l'image
 code_barre_src = imread(img_filename);
 code_barre_src = imrotate(code_barre_src, 70);
@@ -161,7 +155,12 @@ chiffres = zeros(1, 12);
 
 for i=1:12
     [~,indx] = ismember(chiffres_codes(i, :),codes,'rows');
+    if(indx == 0)
+        disp('Impossible de lire le code barre');
+        chiffres(i) = nan;
+    else
     chiffres(i) = mod(indx-1, 10);
+    end
 end
 
 chiffres
