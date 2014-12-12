@@ -26,16 +26,15 @@ function [ code_barre_ligne, x_min, x_max, y_min, y_max ] = get_code_barre_ligne
     end
 
     code_barre = img_ng(y_min:y_max, x_min:x_max);
-
-    N = 256;
+    N = length(unique(code_barre));
     h = hist(code_barre, N);
     s = sum(h,2);
     h_sum = sum(s);
 
-    w = zeros(256, 1);
-    mu = zeros(256, 1);
+    w = zeros(N, 1);
+    mu = zeros(N, 1);
 
-    for k=1:256
+    for k=1:N
         e = 0;
         for i=1:k
             e = e + i*s(i);
@@ -44,16 +43,16 @@ function [ code_barre_ligne, x_min, x_max, y_min, y_max ] = get_code_barre_ligne
         mu(k) = e/h_sum;
     end
 
-    crit = zeros(256, 1);
-    for k=1:256
+    crit = zeros(N, 1);
+    for k=1:N
         crit(k) = w(k)*(mu(N)-mu(k)).^2+(1-w(k))*mu(k).^2;
     end
-
+    
     [~,i] = max(crit);
     seuil = i/N;
     
     code_barre_ligne = mean(code_barre, 1);
-    code_barre_ligne = code_barre_ligne > seuil;
+    code_barre_ligne = code_barre_ligne >= seuil;
     code_barre_ligne = abs(code_barre_ligne - 1);
     x_min = find(code_barre_ligne,1,'first');
     x_max = find(code_barre_ligne,1,'last');

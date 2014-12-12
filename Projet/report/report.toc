@@ -1,0 +1,5 @@
+\contentsline {section}{\numberline {1}D\'etermination de la r\'egion d'int\'er\^et}{2}
+\contentsline {section}{\numberline {2}Estimation de la signature}{3}
+\contentsline {section}{\numberline {3}Identification des chiffres}{4}
+\contentsline {section}{\numberline {4}Cas des codes-barres \textit {orient\'es}}{4}
+\contentsline {section}{\numberline {5}Traitement de la base de donn\'ees des codes-barres}{4}

@@ -8,7 +8,7 @@ function [ chiffres, verif ] = methode_perso( code_barre_line_nb )
     for j=1:nb_elem
         last = fix(i);
         next = fix(i+step);
-        code_barre_code(j) = sum(code_barre_line_nb(last:next-1))/step > 0.5;
+        code_barre_code(j) = sum(code_barre_line_nb(last:next-1))/step >= 0.5;
         i = i + step;
     end
 
@@ -60,15 +60,17 @@ function [ chiffres, verif ] = methode_perso( code_barre_line_nb )
     
     for i=2:13
         [~,indx] = ismember(chiffres_codes(i-1, :),codes,'rows');
-        if(indx == 0)
+        if indx == 0
+            [~, indx] = max( (codes-kron(mean(codes, 2),ones(1,7)))*(fliplr(chiffres_codes(i-1, :) - mean(chiffres_codes(i-1, :)))'));
+            chiffres(i) = mod(indx-1, 10)
             disp('Impossible de reconnaitre le chiffre');
-            chiffres(i) = nan;
-            verif = 0;
+%             chiffres(i) = nan;
+            verif = 1;
         else
-        if i <= 7
-            premier_chiffre(i-1) = fix((indx-1)/10);
-        end
-        chiffres(i) = mod(indx-1, 10);
+            if i <= 7
+                premier_chiffre(i-1) = fix((indx-1)/10);
+            end
+            chiffres(i) = mod(indx-1, 10);
         end
     end
     
@@ -86,5 +88,17 @@ function [ chiffres, verif ] = methode_perso( code_barre_line_nb )
        ];
     [~,indx] = ismember(premier_chiffre,premier_codes,'rows');
     chiffres(1) = indx-1; %TODO
+    
+    cle = 0
+    for i=1:2:12
+        chiffres(i)
+        cle = cle + chiffres(i) + 3*chiffres(i+1);
+    end
+    cle
+    chiffres(13)
+    verif = 0;
+    if mod(cle,10) == chiffres(13)
+        verif = 1
+    end
 end
 
