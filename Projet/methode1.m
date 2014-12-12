@@ -1,4 +1,4 @@
-function [ chiffres, verif ] = methode_perso( code_barre_line_nb )
+function [ chiffres, verif ] = methode1( code_barre_line_nb )
 
     nb_elem = 7*12+3*2+5;
     code_barre_code = zeros(1, nb_elem);
@@ -94,11 +94,10 @@ function [ chiffres, verif ] = methode_perso( code_barre_line_nb )
         chiffres(i)
         cle = cle + chiffres(i) + 3*chiffres(i+1);
     end
-    cle
-    chiffres(13)
+    chiffres(13);
     verif = 0;
-    if mod(cle,10) == chiffres(13)
-        verif = 1
+    if mod(cle+chiffres(13),10) == 0
+        verif = 1;
     end
 end
 

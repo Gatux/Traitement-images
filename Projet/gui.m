@@ -58,7 +58,6 @@ handles.output = hObject;
 % Init variables
 handles.img_raw = [];
 handles.img = [];
-handles.video = [];
 handles.gx = 0;
 handles.gy = 0;
 
@@ -85,9 +84,20 @@ function do_work(hObject, handles)
     cla(handles.axes2);
     imshow(handles.img);
     
-    [gx, gy] = get_ginput(handles);
+    % Tentative de dectection automatique
+    L = length(handles.img(:,1));
+    R = zeros(length(handles.img(:,1)), 1);
+    for i = 1:L-1
+        R(i,1) = sum(handles.img(i+1,:)-handles.img(i,:));
+    end
+    m = find(R == min(R));
+    M = find(R == max(R));
+    off = 20;
+    gx = [off, length(handles.img)-off];
+    gy = [m+off M-off];
+    
     [ code_barre_ligne, x_min, x_max, y_min, y_max ] = get_code_barre_ligne( handles.img, gx, gy, handles.epsilon);
-
+    
     line([x_min+gx(1), x_max+gx(1)], [y_min, y_min], 'Color', 'red');
     line([x_min+gx(1), x_max+gx(1)], [y_max, y_max], 'Color', 'red');
     line([x_min+gx(1), x_min+gx(1)], [y_min, y_max], 'Color', 'red');
@@ -99,22 +109,42 @@ function do_work(hObject, handles)
     
     guidata(hObject, handles);
     
-   % methode perso
-   [ chiffres, verif ] = methode_perso( code_barre_ligne );
-   set(handles.text_code_perso, 'String', sprintf('%d   %d %d %d %d %d %d   %d %d %d %d %d %d', chiffres));
+   [ chiffres, verif ] = methode1( code_barre_ligne );
+   set(handles.text_code, 'String', sprintf('%d   %d %d %d %d %d %d   %d %d %d %d %d %d', chiffres));
    if(verif == 1)
-       set(handles.text_meth_perso, 'ForegroundColor',[0 0.5 0]);
-       set(handles.text_code_perso, 'ForegroundColor',[0 0.5 0]);
-   else
-       set(handles.text_meth_perso, 'ForegroundColor',[1 0 0]);
-       set(handles.text_code_perso, 'ForegroundColor',[1 0 0]);
+       set(handles.text_code, 'ForegroundColor',[0 0.5 0]);
+       set(handles.text_verif, 'ForegroundColor',[0 0.5 0]);
+       set(handles.text_verif, 'String', 'Code barre valide');
+   else % Si cela n'a pas marché, tentative manuelle
+        axes(handles.axes2);
+        cla(handles.axes2);
+        imshow(handles.img);
+        [gx, gy] = get_ginput(handles);
+        [ code_barre_ligne, x_min, x_max, y_min, y_max ] = get_code_barre_ligne( handles.img, gx, gy, handles.epsilon);
+
+        line([x_min+gx(1), x_max+gx(1)], [y_min, y_min], 'Color', 'red');
+        line([x_min+gx(1), x_max+gx(1)], [y_max, y_max], 'Color', 'red');
+        line([x_min+gx(1), x_min+gx(1)], [y_min, y_max], 'Color', 'red');
+        line([x_max+gx(1), x_max+gx(1)], [y_min, y_max], 'Color', 'red');
+
+        handles.code_barre_ligne = code_barre_ligne;
+        handles.gx = gx;
+        handles.gy = gy;
+
+        guidata(hObject, handles);
+
+       [ chiffres, verif ] = methode1( code_barre_ligne );
+       set(handles.text_code, 'String', sprintf('%d   %d %d %d %d %d %d   %d %d %d %d %d %d', chiffres));
+       if(verif == 1)
+           set(handles.text_code, 'ForegroundColor',[0 0.5 0]);
+           set(handles.text_verif, 'ForegroundColor',[0 0.5 0]);
+           set(handles.text_verif, 'String', 'Code barre valide');
+       else
+           set(handles.text_code, 'ForegroundColor',[1 0 0]);
+           set(handles.text_verif, 'ForegroundColor',[1 0 0]);
+           set(handles.text_verif, 'String', 'Code barre non valide');
+       end
    end
-    
-  
-   
-   % methode2
-
-
 
 % --- Outputs from this function are returned to the command line.
 function varargout = gui_OutputFcn(hObject, eventdata, handles) 
