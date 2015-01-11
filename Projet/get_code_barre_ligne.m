@@ -54,8 +54,17 @@ function [ code_barre_ligne, x_min, x_max, y_min, y_max ] = get_code_barre_ligne
     code_barre_ligne = mean(code_barre, 1);
     code_barre_ligne = code_barre_ligne >= seuil;
     code_barre_ligne = abs(code_barre_ligne - 1);
-    x_min = find(code_barre_ligne,1,'first');
-    x_max = find(code_barre_ligne,1,'last');
+    
+    x_min = 1;
+    if code_barre_ligne(x_min) == 0
+        x_min = find(code_barre_ligne,1,'first');
+    end
+    
+    x_max = length(code_barre_ligne);
+    if code_barre_ligne(x_max) == 0
+        x_max = find(code_barre_ligne,1,'last');
+    end
+    
     code_barre_ligne = code_barre_ligne(x_min:x_max);
     code_barre_ligne = abs(code_barre_ligne - 1);
 end

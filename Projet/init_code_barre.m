@@ -11,7 +11,7 @@ else
     img_nb = double(img_in/255);
 end
 
-img_edge = edge(img_nb, 'sobel');
+img_edge = edge(img_nb);
 [H,T,~] = hough(img_edge);
 peak = houghpeaks(H, 30);
 [m, r] = max(peak(:, 1));
